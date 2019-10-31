@@ -1,0 +1,42 @@
+{
+  "name": "hamlet-framework/db-pdo",
+  "type": "framework",
+  "description": "Hamlet Framework / DB / PDO",
+  "keywords": ["framework", "orm", "database", "pdo"],
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Vasily Kartashov",
+      "email": "info@kartashov.com"
+    }
+  ],
+  "config": {
+    "optimize-autoloader": true,
+    "classmap-authoritative": true,
+    "sort-packages": true
+  },
+  "require": {
+    "php": "^7",
+    "ext-pdo": "@stable",
+    "psr/log": "@stable",
+    "hamlet-framework/db": "@stable"
+  },
+  "require-dev": {
+    "phake/phake": "@stable",
+    "phpunit/phpunit": "^6 || ^7",
+    "squizlabs/php_codesniffer": "@stable",
+    "monolog/monolog": "@stable",
+    "vimeo/psalm": "@stable",
+    "jakub-onderka/php-parallel-lint": "@stable"
+  },
+  "autoload": {
+    "psr-4": {
+      "Hamlet\\Database\\PDO\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Hamlet\\Database\\PDO\\": "tests"
+    }
+  }
+}
