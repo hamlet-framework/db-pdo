@@ -17,7 +17,9 @@ class PDODatabase extends Database
     {
         parent::__construct(new ConnectionPool(
             function () use ($dsn, $user, $password): PDO {
-                return new PDO($dsn, $user, $password);
+                return new PDO($dsn, $user, $password, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                ]);
             }
         ));
     }
