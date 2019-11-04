@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hamlet\Database\PDO;
 
-use Hamlet\Database\ConnectionPool;
 use Hamlet\Database\Database;
 use Hamlet\Database\DatabaseException;
 use Hamlet\Database\Procedure;
+use Hamlet\Database\SimpleConnectionPool;
 use PDO;
 
 /**
@@ -15,7 +17,7 @@ class PDODatabase extends Database
 {
     public function __construct(string $dsn, string $user = null, string $password = null)
     {
-        parent::__construct(new ConnectionPool(
+        parent::__construct(new SimpleConnectionPool(
             function () use ($dsn, $user, $password): PDO {
                 return new PDO($dsn, $user, $password, [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
