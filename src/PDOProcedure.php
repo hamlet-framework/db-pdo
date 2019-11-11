@@ -58,7 +58,9 @@ class PDOProcedure extends Procedure
      */
     public function execute()
     {
-        $this->bindParameters($this->handle)->execute();
+        $statement = $this->bindParameters($this->handle);
+        $statement->execute();
+        $this->affectedRows = $statement->rowCount();
     }
 
     /**
