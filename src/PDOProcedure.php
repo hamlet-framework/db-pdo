@@ -15,18 +15,30 @@ class PDOProcedure extends Procedure
 {
     use QueryExpanderTrait;
 
-    /** @var callable */
-    private $executor;
+    /**
+     * @var PDO
+     */
+    private $handle;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $query;
 
-    /** @var int */
+    /**
+     * @var int
+     */
     private $affectedRows = 0;
 
-    public function __construct(callable $executor, string $query)
+    /**
+     * @var PDOStatement
+     * @psalm-var array<string,PDOStatement>
+     */
+    private $cache = [];
+
+    public function __construct(PDO $handle, string $query)
     {
-        $this->executor = $executor;
+        $this->handle = $handle;
         $this->query = $query;
     }
 
@@ -37,11 +49,8 @@ class PDOProcedure extends Procedure
      */
     public function insert(): int
     {
-        $procedure = function (PDO $connection): int {
-            $this->bindParameters($connection)->execute();
-            return (int) $connection->lastInsertId();
-        };
-        return ($this->executor)($procedure);
+        $this->bindParameters($this->handle)->execute();
+        return (int) $this->handle->lastInsertId();
     }
 
     /**
@@ -49,16 +58,7 @@ class PDOProcedure extends Procedure
      */
     public function execute()
     {
-        $procedure =
-            /**
-             * @param PDO $connection
-             * @return void
-             */
-            function (PDO $connection) {
-                $this->bindParameters($connection)->execute();
-            };
-
-        ($this->executor)($procedure);
+        $this->bindParameters($this->handle)->execute();
     }
 
     /**
@@ -75,30 +75,20 @@ class PDOProcedure extends Procedure
      * @return Generator
      * @psalm-return Generator<int,array<string,int|string|float|null>,mixed,void>
      * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnTypeCoercion
      * @psalm-suppress MixedReturnStatement
+     * @psalm-suppress MixedAssignment
      */
     protected function fetch(): Generator
     {
-        $procedure =
-            /**
-             * @param PDO $connection
-             * @return Generator
-             * @psalm-return Generator<int,array<string,int|string|float|null>,mixed,void>
-             * @psalm-suppress MixedReturnTypeCoercion
-             */
-            function (PDO $connection) {
-                $statement = $this->bindParameters($connection);
-                $statement->execute();
-                $this->affectedRows = $statement->rowCount();
-                $index = 0;
-                /** @psalm-suppress MixedAssignment */
-                while (($row = $statement->fetch(PDO::FETCH_ASSOC)) !== false) {
-                    yield $index++ => $row;
-                }
-                $statement = null;
-            };
-
-        return ($this->executor)($procedure);
+        $statement = $this->bindParameters($this->handle);
+        $statement->execute();
+        $this->affectedRows = $statement->rowCount();
+        $index = 0;
+        while (($row = $statement->fetch(PDO::FETCH_ASSOC)) !== false) {
+            yield $index++ => $row;
+        }
+        $statement = null;
     }
 
     private function bindParameters(PDO $connection): PDOStatement
@@ -106,7 +96,7 @@ class PDOProcedure extends Procedure
         list($query, $parameters) = $this->unwrapQueryAndParameters($this->query, $this->parameters);
         $this->parameters = [];
 
-        $statement = $connection->prepare($query);
+        $statement = $this->cache[$query] = ($this->cache[$query] ?? $connection->prepare($query));
         if ($statement === false) {
             throw new DatabaseException('Cannot prepare statement ' . $query);
         }
