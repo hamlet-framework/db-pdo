@@ -77,6 +77,8 @@ class PDOProcedure extends Procedure
      * @return Generator
      * @psalm-return Generator<int,array<string,scalar>,mixed,void>
      * @psalm-suppress ImplementedReturnTypeMismatch
+     * @psalm-suppress MixedReturnTypeCoercion
+     * @psalm-suppress MixedAssignment
      */
     protected function fetch(): Generator
     {
