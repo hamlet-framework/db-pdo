@@ -16,7 +16,10 @@ class PDODatabaseTest extends TestCase
     /** @var Procedure */
     private $procedure;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    public function setUp_()
     {
         $this->database = new PDODatabase('sqlite:' . tempnam(sys_get_temp_dir(), '.sqlite'));
         $this->database->withSession(function (Session $session) {

@@ -17,16 +17,16 @@
   },
   "minimum-stability": "dev",
   "require": {
-    "php": "^7",
+    "php": "^7 || ^8",
     "ext-pdo": "@stable",
     "psr/log": "@stable",
     "hamlet-framework/db": "dev-master"
   },
   "require-dev": {
-    "jakub-onderka/php-parallel-lint": "@stable",
+    "php-parallel-lint/php-parallel-lint": "@stable",
     "monolog/monolog": "@stable",
     "phake/phake": "@stable",
-    "phpunit/phpunit": "^6 || ^7",
+    "phpunit/phpunit": "^6 || ^7 || ^8",
     "squizlabs/php_codesniffer": "@stable",
     "vimeo/psalm": "@stable"
   },
