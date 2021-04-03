@@ -89,7 +89,6 @@ class PDOProcedure extends Procedure
         while (($row = $statement->fetch(PDO::FETCH_ASSOC)) !== false) {
             yield $index++ => $row;
         }
-        $statement = null;
     }
 
     private function bindParameters(PDO $connection): PDOStatement
