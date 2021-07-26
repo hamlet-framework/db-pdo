@@ -44,8 +44,6 @@ class PDOProcedure extends Procedure
 
     /**
      * @return int
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
      */
     public function insert(): int
     {
@@ -65,8 +63,6 @@ class PDOProcedure extends Procedure
 
     /**
      * @return int
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
      */
     public function affectedRows(): int
     {
@@ -77,8 +73,6 @@ class PDOProcedure extends Procedure
      * @return Generator
      * @psalm-return Generator<int,array<string,null|scalar>,mixed,void>
      * @psalm-suppress ImplementedReturnTypeMismatch
-     * @psalm-suppress MixedReturnTypeCoercion
-     * @psalm-suppress MixedAssignment
      */
     protected function fetch(): Generator
     {
