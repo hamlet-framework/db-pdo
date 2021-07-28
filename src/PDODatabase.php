@@ -44,4 +44,32 @@ class PDODatabase extends Database
         $session->setLogger($this->logger);
         return $session;
     }
+
+    /**
+     * @template K
+     * @template Q
+     * @param array<K,callable(Session):Q> $callables
+     * @return array<K,Q>
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress UndefinedClass
+     */
+    public function withSessions(array $callables): array
+    {
+        if (class_exists('\parallel\Runtime')) {
+            $runtime = new \parallel\Runtime();
+            $futures = [];
+            foreach ($callables as $key => $callable) {
+                $futures[$key] = $runtime->run(function () use ($callable) {
+                    return $this->withSession($callable);
+                });
+            }
+            $results = [];
+            foreach ($futures as $key => $future) {
+                $results[$key] = $future;
+            }
+            return $results;
+        } else {
+            return parent::withSessions($callables);
+        }
+    }
 }
