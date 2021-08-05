@@ -18,7 +18,7 @@
   "require": {
     "php": "^7 || ^8",
     "ext-pdo": "@stable",
-    "psr/log": "@stable",
+    "psr/log": "^1",
     "hamlet-framework/db": "@stable"
   },
   "require-dev": {
